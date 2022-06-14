@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace DAL.Interfaces
 {
@@ -10,6 +11,6 @@ namespace DAL.Interfaces
         IRepository<Statement> Statements { get; }
         IRepository<StatementType> StatementTypes { get; }
         IRepository<Transaction> Transactions { get; }
-        void Save();
+        Task SaveAsync();
     }
 }

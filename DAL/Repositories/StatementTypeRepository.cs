@@ -1,7 +1,10 @@
 ﻿using DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace DAL.Repositories
 {
@@ -14,36 +17,37 @@ namespace DAL.Repositories
             this.db = context;
         }
 
-        public void Create(StatementType item)
+        public async Task CreateAsync(StatementType item)
         {
-            db.StatementTypes.Add(item);
+            await db.StatementTypes.AddAsync(item);
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            StatementType type = db.StatementTypes.Find(id);
+            StatementType type = await db.StatementTypes.FindAsync(id);
             if (type != null)
                 db.StatementTypes.Remove(type);
         }
 
-        public IEnumerable<StatementType> Find(Func<StatementType, bool> predicate)
+        public async Task<IEnumerable<StatementType>> FindAsync(Expression<Func<StatementType, bool>> predicate)
         {
-            return db.StatementTypes.Where(predicate).ToList();
+            return await db.StatementTypes.Where(predicate).ToListAsync();
         }
 
-        public StatementType Get(int id)
+        public async Task<StatementType> GetAsync(int id)
         {
-            return db.StatementTypes.Find(id);
+            return await db.StatementTypes.FindAsync(id);
         }
 
-        public IEnumerable<StatementType> GetAll()
+        public async Task<IEnumerable<StatementType>> GetAllAsync()
         {
-            return db.StatementTypes;
+            return await db.StatementTypes.ToListAsync();
         }
 
-        public void Update(StatementType item)
+        public async Task UpdateAsync(StatementType item)
         {
             db.Entry(item).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            await db.SaveChangesAsync();
         }
     }
 }

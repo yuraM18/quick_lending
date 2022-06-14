@@ -1,7 +1,10 @@
 ﻿using DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace DAL.Repositories
 {
@@ -14,36 +17,37 @@ namespace DAL.Repositories
             this.db = context;
         }
 
-        public void Create(Fine item)
+        public async Task CreateAsync(Fine item)
         {
-            db.Fines.Add(item);
+            await db.Fines.AddAsync(item);
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            Fine fine = db.Fines.Find(id);
+            Fine fine = await db.Fines.FindAsync();
             if (fine != null)
                 db.Fines.Remove(fine);
         }
 
-        public IEnumerable<Fine> Find(Func<Fine, bool> predicate)
+        public async Task<IEnumerable<Fine>> FindAsync(Expression<Func<Fine, bool>> predicate)
         {
-            return db.Fines.Where(predicate).ToList();
+            return await db.Fines.Where(predicate).ToListAsync();
         }
 
-        public Fine Get(int id)
+        public async Task<Fine> GetAsync(int id)
         {
-            return db.Fines.Find(id);
+            return await db.Fines.FindAsync(id);
         }
 
-        public IEnumerable<Fine> GetAll()
+        public async Task<IEnumerable<Fine>> GetAllAsync()
         {
-            return db.Fines;
+            return await db.Fines.ToListAsync();
         }
 
-        public void Update(Fine item)
+        public async Task UpdateAsync(Fine item)
         {
             db.Entry(item).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            await db.SaveChangesAsync();
         }
     }
 }

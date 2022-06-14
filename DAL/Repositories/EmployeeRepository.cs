@@ -1,7 +1,10 @@
 ﻿using DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace DAL.Repositories
 {
@@ -14,36 +17,37 @@ namespace DAL.Repositories
             this.db = context;
         }
 
-        public void Create(Employee item)
+        public async Task CreateAsync(Employee item)
         {
-            db.Employees.Add(item);
+            await db.Employees.AddAsync(item);
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            Employee employee = db.Employees.Find(id);
+            Employee employee = await db.Employees.FindAsync(id);
             if (employee != null)
                 db.Employees.Remove(employee);
         }
 
-        public IEnumerable<Employee> Find(Func<Employee, bool> predicate)
+        public async Task<IEnumerable<Employee>> FindAsync(Expression<Func<Employee, bool>> predicate)
         {
-            return db.Employees.Where(predicate).ToList();
+            return  await db.Employees.Where(predicate).ToListAsync();
         }
 
-        public Employee Get(int id)
+        public async Task<Employee> GetAsync(int id)
         {
-            return db.Employees.Find(id);
+            return await db.Employees.FindAsync(id);
         }
 
-        public IEnumerable<Employee> GetAll()
+        public async Task<IEnumerable<Employee>> GetAllAsync()
         {
-            return db.Employees;
+            return await db.Employees.ToListAsync();
         }
 
-        public void Update(Employee item)
+        public async Task UpdateAsync(Employee item)
         {
             db.Entry(item).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            await db.SaveChangesAsync();
         }
     }
 }

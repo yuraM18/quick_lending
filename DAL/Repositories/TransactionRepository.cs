@@ -1,7 +1,10 @@
 ﻿using DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace DAL.Repositories
 {
@@ -13,36 +16,37 @@ namespace DAL.Repositories
         {
             this.db = context;        }
 
-        public void Create(Transaction item)
+        public async Task CreateAsync(Transaction item)
         {
-            db.Transactions.Add(item);
+            await db.Transactions.AddAsync(item);
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            Transaction transaction = db.Transactions.Find(id);
+            Transaction transaction = await db.Transactions.FindAsync(id);
             if (transaction != null)
                 db.Transactions.Remove(transaction);
         }
 
-        public IEnumerable<Transaction> Find(Func<Transaction, bool> predicate)
+        public async Task<IEnumerable<Transaction>> FindAsync(Expression<Func<Transaction, bool>> predicate)
         {
-            return db.Transactions.Where(predicate).ToList();
+            return await db.Transactions.Where(predicate).ToListAsync();
         }
 
-        public Transaction Get(int id)
+        public async Task<Transaction> GetAsync(int id)
         {
-            return db.Transactions.Find(id);
+            return await db.Transactions.FindAsync(id);
         }
 
-        public IEnumerable<Transaction> GetAll()
+        public async Task<IEnumerable<Transaction>> GetAllAsync()
         {
-            return db.Transactions;
+            return await db.Transactions.ToListAsync();
         }
 
-        public void Update(Transaction item)
+        public async Task UpdateAsync(Transaction item)
         {
             db.Entry(item).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            await db.SaveChangesAsync();
         }
     }
 }

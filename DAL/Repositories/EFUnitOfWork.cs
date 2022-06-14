@@ -1,5 +1,6 @@
 ﻿using DAL.Interfaces;
 using System;
+using System.Threading.Tasks;
 
 namespace DAL.Repositories
 {
@@ -98,9 +99,9 @@ namespace DAL.Repositories
             GC.SuppressFinalize(this);
         }
 
-        public void Save()
+        public async Task SaveAsync()
         {
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
     }
 }
