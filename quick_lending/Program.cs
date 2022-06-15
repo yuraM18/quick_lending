@@ -1,19 +1,21 @@
 ﻿using DAL;
+using DAL.Interfaces;
 using System;
 using System.Linq;
 
 namespace quick_lending
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            using(quick_lendingContext db = new quick_lendingContext())
+
+            using (quick_lendingContext db = new quick_lendingContext())
             {
-                var users = db.People.ToList();
-                foreach(Person p in users)
+                var users = db.StatementTypes.ToList();
+                foreach(StatementType p in users)
                 {
-                    Console.WriteLine(p.Email);
+                    Console.WriteLine(p.Name);
                 }
             }
             Console.ReadKey();
