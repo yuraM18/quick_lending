@@ -60,9 +60,9 @@ namespace API.Controllers
                 await _personService.Create(person);
                 return Ok();
             }
-            catch
+            catch(ValidationException ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
 
