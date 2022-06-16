@@ -4,11 +4,6 @@ using BLL.Services;
 using DAL;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLL
 {
@@ -26,6 +21,7 @@ namespace BLL
             services.AddSingleton(mapper);
 
             services.AddTransient<IStatementTypeService, StatementTypeService>();
+            services.AddTransient<IPersonService, PersonService>();
         }
     }
 }
