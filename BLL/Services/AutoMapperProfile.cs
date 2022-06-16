@@ -10,6 +10,7 @@ namespace BLL.Services
         {
             CreateMap<StatementTypeDTO, StatementType>().ReverseMap();
             CreateMap<PersonDTO, Person>().ReverseMap();
+            CreateMap<EmployeeDTO, Employee>().ReverseMap();
         }
     }
 }

@@ -22,6 +22,7 @@ namespace BLL
 
             services.AddTransient<IStatementTypeService, StatementTypeService>();
             services.AddTransient<IPersonService, PersonService>();
+            services.AddTransient<IEmployeeService, EmployeeService>();
         }
     }
 }
