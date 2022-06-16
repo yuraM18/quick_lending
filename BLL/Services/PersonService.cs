@@ -69,26 +69,46 @@ namespace BLL.Services
 
         public async Task Update(PersonDTO person)
         {
-            bool emailValid = EmailHelper.EmailValidate(person.Email);
-            if (!emailValid)
-                throw new ValidationException("email valid", person.Email);
-            if (person.Phone.Trim().Length != 10)
-                throw new ValidationException("phone number != 10", person.Phone);
-            if (person.IdNumber.Trim().Length != 9)
-                throw new ValidationException("Id number not equal to 9", person.IdNumber);
-            if (person.Age < 18 || person.Age > 90)
-                throw new ValidationException("person age more then 90 or less 18", person.Age.ToString());
-
             var _person = await _unitOfWork.People.GetAsync(person.Id);
+            var valid = await _unitOfWork.People.GetAllAsync();
 
-            _person.Id = person.Id;
-            _person.FirstName = person.FirstName;
-            _person.LastName = person.LastName;
-            _person.Phone = person.Phone;
-            _person.IdNumber = person.IdNumber;
-            _person.Email = person.Email;
-            _person.Age = person.Age;
-            _person.Tin = person.Tin;
+            if (person.Email != null)
+            {
+                bool emailValid = EmailHelper.EmailValidate(person.Email);
+                if (!emailValid)
+                    throw new ValidationException("email valid", person.Email);
+                _person.Email = person.Email;
+            }
+            if (person.Phone != null)
+            {
+                if (person.Phone.Trim().Length != 10)
+                    throw new ValidationException("phone number != 10", person.Phone);
+                if (valid.FirstOrDefault(x => x.Phone == person.Phone) != null)
+                    throw new ValidationException("Phone number NOT Unique", person.Phone);
+
+                _person.Phone = person.Phone;
+            }
+            if (person.IdNumber != null)
+            {
+                if (person.IdNumber.Trim().Length != 9)
+                    throw new ValidationException("Id number not equal to 9", person.IdNumber);
+                if (valid.FirstOrDefault(x => x.IdNumber == person.IdNumber) != null)
+                    throw new ValidationException("Id number NOT Unique", person.IdNumber);
+
+                _person.IdNumber = person.IdNumber;
+            }
+            if (person.Age != null)
+            {
+                if (person.Age < 18 || person.Age > 90)
+                    throw new ValidationException("person age more then 90 or less 18", person.Age.ToString());
+                _person.Age = person.Age;
+            }
+            if (person.FirstName != null)
+                _person.FirstName = person.FirstName;
+            if (person.LastName != null)
+                _person.LastName = person.LastName;
+            if (person.Tin != null)
+                _person.Tin = person.Tin;
 
             await _unitOfWork.People.UpdateAsync(_person);
             await _unitOfWork.SaveAsync();

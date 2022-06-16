@@ -74,9 +74,9 @@ namespace API.Controllers
                 await _personService.Update(person);
                 return Ok();
             }
-            catch
+            catch(ValidationException ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
 

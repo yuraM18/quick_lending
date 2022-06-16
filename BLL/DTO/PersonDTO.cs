@@ -7,7 +7,7 @@
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
-        public int Age { get; set; }
+        public int? Age { get; set; }
         public string IdNumber { get; set; }
         public int? Tin { get; set; }
     }
