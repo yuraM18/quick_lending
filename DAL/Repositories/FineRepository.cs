@@ -29,9 +29,9 @@ namespace DAL.Repositories
                 db.Fines.Remove(fine);
         }
 
-        public async Task<IEnumerable<Fine>> FindAsync(Expression<Func<Fine, bool>> predicate)
+        public IQueryable<Fine> Find(Expression<Func<Fine, bool>> predicate)
         {
-            return await db.Fines.Where(predicate).ToListAsync();
+            return db.Fines.AsNoTracking().Where(predicate);
         }
 
         public async Task<Fine> GetAsync(int id)

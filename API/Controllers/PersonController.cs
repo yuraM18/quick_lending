@@ -1,14 +1,13 @@
 ﻿using BLL.DTO;
 using BLL.Interfaces;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace API.Controllers
 {
+    [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class PersonController : ControllerBase
@@ -23,78 +22,37 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PersonDTO>>> GetAll()
         {
-            try
-            {
-                IEnumerable<PersonDTO> people = await _personService.GetAll();
-                if (people == null)
-                    return NotFound();
-                return new ObjectResult(people);
-            }
-            catch
-            {
-                return BadRequest();
-            }
+            IEnumerable<PersonDTO> people = await _personService.GetAll();
+            return Ok(people);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<PersonDTO>> Get(int id)
         {
-            try
-            {
-                PersonDTO person = await _personService.Get(id);
-                if (person == null)
-                    return NotFound();
-                return new ObjectResult(person);
-            }
-            catch
-            {
-                return BadRequest();
-            }
+            PersonDTO person = await _personService.Get(id);
+            return Ok(person);
         }
 
         [HttpPost]
         public async Task<ActionResult<PersonDTO>> Post([FromBody] PersonDTO person)
         {
-            try
-            {
-                await _personService.Create(person);
-                return Ok();
-            }
-            catch(ValidationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _personService.Create(person);
+            return Ok();
         }
 
         [HttpPut]
-        public async Task<ActionResult<PersonDTO>> Put([FromBody]  PersonDTO person)
+        public async Task<ActionResult<PersonDTO>> Put([FromBody] PersonDTO person)
         {
-            try
-            {
-                await _personService.Update(person);
-                return Ok();
-            }
-            catch(ValidationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _personService.Update(person);
+            return Ok();
         }
 
         [HttpDelete("id")]
         public async Task<ActionResult<PersonDTO>> Delete(int id)
         {
-            try
-            {
-                var person = await _personService.Get(id);
-                if (person == null)
-                    return NotFound();
-                await _personService.Delete(person);
-                return Ok();
-            }
-            catch
-            {
-                return BadRequest();
-            }
+            var person = await _personService.Get(id);
+            await _personService.Delete(person);
+            return Ok();
         }
     }
 }

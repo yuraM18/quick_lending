@@ -29,9 +29,9 @@ namespace DAL.Repositories
                 db.Employees.Remove(employee);
         }
 
-        public async Task<IEnumerable<Employee>> FindAsync(Expression<Func<Employee, bool>> predicate)
+        public IQueryable<Employee> Find(Expression<Func<Employee, bool>> predicate)
         {
-            return  await db.Employees.Where(predicate).ToListAsync();
+            return db.Employees.AsNoTracking().Where(predicate);
         }
 
         public async Task<Employee> GetAsync(int id)

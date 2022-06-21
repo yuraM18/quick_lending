@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 #nullable disable
 
@@ -19,7 +18,7 @@ namespace DAL
         public string Phone { get; set; }
         public int? Age { get; set; }
         public string IdNumber { get; set; }
-        public int? Tin { get; set; }
+        public string Password { get; set; }
 
         public virtual Employee Employee { get; set; }
         public virtual ICollection<Statement> Statements { get; set; }

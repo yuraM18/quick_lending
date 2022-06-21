@@ -14,7 +14,8 @@ namespace DAL.Repositories
 
         public TransactionRepository(quick_lendingContext context)
         {
-            this.db = context;        }
+            this.db = context;
+        }
 
         public async Task CreateAsync(Transaction item)
         {
@@ -28,9 +29,9 @@ namespace DAL.Repositories
                 db.Transactions.Remove(transaction);
         }
 
-        public async Task<IEnumerable<Transaction>> FindAsync(Expression<Func<Transaction, bool>> predicate)
+        public IQueryable<Transaction> Find(Expression<Func<Transaction, bool>> predicate)
         {
-            return await db.Transactions.Where(predicate).ToListAsync();
+            return db.Transactions.AsNoTracking().Where(predicate);
         }
 
         public async Task<Transaction> GetAsync(int id)

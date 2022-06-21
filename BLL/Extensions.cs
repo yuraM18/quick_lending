@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
+using BLL.DTO;
 using BLL.Interfaces;
 using BLL.Services;
+using BLL.Validators;
 using DAL;
+using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -23,6 +26,18 @@ namespace BLL
             services.AddTransient<IStatementTypeService, StatementTypeService>();
             services.AddTransient<IPersonService, PersonService>();
             services.AddTransient<IEmployeeService, EmployeeService>();
+            services.AddTransient<IUserService, UserService>();
+
+            services.AddTransient<IValidator<PersonDTO>, PersonValidator>();
+
         }
+
+        ////public static class TokenProviderMiddlewareExtensions
+        ////{
+        //public static IApplicationBuilder UseTokenProviderMiddlewaare(this ApplicationBuilder builder)
+        //{
+        //    return builder.UseMiddleware<TokenProviderMiddleware>();
+        //}
+        ////}
     }
 }

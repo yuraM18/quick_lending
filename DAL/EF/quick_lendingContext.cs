@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
 #nullable disable
 
@@ -81,7 +79,7 @@ namespace DAL
                 entity.HasIndex(e => e.Phone, "people_phone_key")
                     .IsUnique();
 
-                entity.HasIndex(e => e.Tin, "people_tin_key")
+                entity.HasIndex(e => e.Password, "people_tin_key")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasDefaultValueSql("nextval('people_id_seq'::regclass)");
@@ -106,7 +104,7 @@ namespace DAL
                     .IsRequired()
                     .HasMaxLength(10);
 
-                entity.Property(e => e.Tin).HasColumnName("TIN");
+                entity.Property(e => e.Password).IsRequired();
             });
 
             modelBuilder.Entity<Statement>(entity =>

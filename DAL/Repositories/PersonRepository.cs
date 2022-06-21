@@ -20,33 +20,37 @@ namespace DAL.Repositories
         public async Task CreateAsync(Person item)
         {
             await db.People.AddAsync(item);
+            await db.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)
         {
-            Person person = await db.People.FindAsync(id);
+            Person person = await db.People.FirstOrDefaultAsync(p => p.Id == id);
             if (person != null)
+            {
                 db.People.Remove(person);
+                await db.SaveChangesAsync();
+            }
         }
 
-        public async Task<IEnumerable<Person>> FindAsync(Expression<Func<Person, bool>> predicate)
+        public IQueryable<Person> Find(Expression<Func<Person, bool>> predicate)
         {
-            return await db.People.Where(predicate).ToListAsync();
+            return db.People.AsNoTracking().Where(predicate);
         }
 
         public async Task<Person> GetAsync(int id)
         {
-            return await db.People.FindAsync(id);
+            return await db.People.AsNoTracking().FirstOrDefaultAsync(person => person.Id == id);
         }
 
         public async Task<IEnumerable<Person>> GetAllAsync()
         {
-            return await db.People.ToListAsync();
+            return await db.People.AsNoTracking().ToListAsync();
         }
 
         public async Task UpdateAsync(Person item)
         {
-            db.Entry(item).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            db.People.Update(item);//.Entry(item).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
             await db.SaveChangesAsync();
         }
     }

@@ -29,9 +29,9 @@ namespace DAL.Repositories
                 db.StatementTypes.Remove(type);
         }
 
-        public async Task<IEnumerable<StatementType>> FindAsync(Expression<Func<StatementType, bool>> predicate)
+        public IQueryable<StatementType> Find(Expression<Func<StatementType, bool>> predicate)
         {
-            return await db.StatementTypes.Where(predicate).ToListAsync();
+            return db.StatementTypes.AsNoTracking().Where(predicate);
         }
 
         public async Task<StatementType> GetAsync(int id)
