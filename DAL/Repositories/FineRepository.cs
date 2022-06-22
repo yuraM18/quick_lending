@@ -1,4 +1,5 @@
 ﻿using DAL.Interfaces;
+using DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -48,6 +49,11 @@ namespace DAL.Repositories
         {
             db.Entry(item).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
             await db.SaveChangesAsync();
+        }
+
+        public Task<IEnumerable<Fine>> GetPaginatedData(BaseFilter filter)
+        {
+            throw new NotImplementedException();
         }
     }
 }

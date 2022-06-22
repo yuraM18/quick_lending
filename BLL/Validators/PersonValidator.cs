@@ -19,6 +19,7 @@ namespace BLL.Validators
             RuleFor(p => p.Age).NotEmpty().WithMessage("Age is required.")
                 .InclusiveBetween(18, 90);
             RuleFor(p => p.IdNumber).NotEmpty().Length(9);
+            RuleFor(p => p.Password).NotEmpty().NotNull();
         }
     }
 }

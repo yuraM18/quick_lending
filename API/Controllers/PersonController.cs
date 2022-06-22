@@ -1,13 +1,12 @@
 ﻿using BLL.DTO;
 using BLL.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace API.Controllers
 {
-    [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class PersonController : ControllerBase
@@ -24,12 +23,28 @@ namespace API.Controllers
         {
             IEnumerable<PersonDTO> people = await _personService.GetAll();
             return Ok(people);
+
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<PersonDTO>> Get(int id)
         {
             PersonDTO person = await _personService.Get(id);
+            return Ok(person);
+        }
+
+        [HttpGet("{currentPage},{itemsOnPage}")]
+        public async Task<ActionResult<PersonDTO>> GetMany(int currentPage, int itemsOnPage, bool? sortingDirection)
+        {
+            if (currentPage <= 0)
+            {
+                currentPage = 1;
+            }
+            if (itemsOnPage <= 0)
+            {
+                itemsOnPage = 10;
+            }
+            IEnumerable<PersonDTO> person = await _personService.GetMany(currentPage, itemsOnPage, sortingDirection);
             return Ok(person);
         }
 

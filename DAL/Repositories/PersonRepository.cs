@@ -1,4 +1,6 @@
-﻿using DAL.Interfaces;
+﻿using DAL.Helpers;
+using DAL.Interfaces;
+using DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -52,6 +54,28 @@ namespace DAL.Repositories
         {
             db.People.Update(item);//.Entry(item).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
             await db.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Person>> GetPaginatedData(BaseFilter filter)
+        {
+            var query = db.People.AsQueryable()
+                .Include(person => person.Statements);
+
+            int totalPersonCount = query.Count();
+            DataProviderHelper<Person> paginatedResult = new DataProviderHelper<Person>();
+
+
+            int itemsToSkip = paginatedResult.GetItemsToSkip(totalPersonCount, filter.CurrentPage, filter.ItemsOnPage);
+            int itemsToTake = paginatedResult.GetItemsToTake(totalPersonCount, filter.CurrentPage, filter.ItemsOnPage);
+
+
+            var paginated = new DataProviderHelper<Person>()
+                .GetPaginatedData((await query.ToListAsync())
+                .Skip(itemsToSkip)
+                .Take(itemsToTake).ToList(),
+                filter.CurrentPage, filter.ItemsOnPage, totalPersonCount);
+
+            return paginated.Data;
         }
     }
 }

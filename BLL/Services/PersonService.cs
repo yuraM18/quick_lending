@@ -42,6 +42,13 @@ namespace BLL.Services
             return _mapper.Map<IEnumerable<Person>, IEnumerable<PersonDTO>>(people);
         }
 
+        public async Task<IEnumerable<PersonDTO>> GetMany(int currentPage, int itemsOnPage, bool? sortingDirection)
+        {
+            var filter = new PersonDTO { CurrentPage = currentPage, ItemsOnPage = itemsOnPage, SortingDirection = sortingDirection };
+            var people = await _unitOfWork.People.GetPaginatedData(filter);
+            return _mapper.Map<IEnumerable<Person>, IEnumerable<PersonDTO>>(people);
+        }
+
         public async Task Update(PersonDTO person)
         {
             await _unitOfWork.People.UpdateAsync(_mapper.Map<PersonDTO, Person>(person));

@@ -1,6 +1,8 @@
-﻿namespace BLL.DTO
+﻿using DAL.Models;
+
+namespace BLL.DTO
 {
-    public class PersonDTO
+    public class PersonDTO : BaseFilter
     {
         public int Id { get; set; }
         public string FirstName { get; set; }

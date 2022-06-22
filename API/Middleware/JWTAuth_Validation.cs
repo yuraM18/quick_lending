@@ -1,5 +1,4 @@
-﻿using BLL.Models;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
@@ -11,7 +10,7 @@ namespace API.Middleware
     {
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            var account = (AuthenticateRequest)context.HttpContext.Items["User"];
+            var account = context.HttpContext.Items["User"];//(AuthenticateRequest)
             if (account == null)
             {
                 // not logged in
