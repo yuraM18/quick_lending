@@ -1,4 +1,5 @@
 ﻿using DAL.Interfaces;
+using DAL.Models;
 using System;
 using System.Threading.Tasks;
 
@@ -17,6 +18,16 @@ namespace DAL.Repositories
         public EFUnitOfWork(quick_lendingContext context)
         {
             db = context;
+        }
+
+        public IFilter<Person, PersonFilter> PersonFilter
+        {
+            get
+            {
+                if (personRepository == null)
+                    personRepository = new PersonRepository(db);
+                return personRepository;
+            }
         }
 
         public IRepository<Employee> Employees

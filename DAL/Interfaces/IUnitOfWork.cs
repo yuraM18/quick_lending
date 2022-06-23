@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DAL.Models;
+using System;
 using System.Threading.Tasks;
 
 namespace DAL.Interfaces
@@ -11,6 +12,7 @@ namespace DAL.Interfaces
         IRepository<Statement> Statements { get; }
         IRepository<StatementType> StatementTypes { get; }
         IRepository<Transaction> Transactions { get; }
+        IFilter<Person, PersonFilter> PersonFilter { get; }
         Task SaveAsync();
     }
 }

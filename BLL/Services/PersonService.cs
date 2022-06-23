@@ -3,6 +3,7 @@ using BLL.DTO;
 using BLL.Interfaces;
 using DAL;
 using DAL.Interfaces;
+using DAL.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -42,10 +43,9 @@ namespace BLL.Services
             return _mapper.Map<IEnumerable<Person>, IEnumerable<PersonDTO>>(people);
         }
 
-        public async Task<IEnumerable<PersonDTO>> GetMany(int currentPage, int itemsOnPage, bool? sortingDirection)
+        public async Task<IEnumerable<PersonDTO>> GetMany(PersonFilter filter)
         {
-            var filter = new PersonDTO { CurrentPage = currentPage, ItemsOnPage = itemsOnPage, SortingDirection = sortingDirection };
-            var people = await _unitOfWork.People.GetPaginatedData(filter);
+            var people = await _unitOfWork.PersonFilter.GetPaginatedData(filter);
             return _mapper.Map<IEnumerable<Person>, IEnumerable<PersonDTO>>(people);
         }
 

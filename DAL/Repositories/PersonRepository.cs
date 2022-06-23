@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DAL.Repositories
 {
-    public class PersonRepository : IRepository<Person>
+    public class PersonRepository : IRepository<Person>, IFilter<Person, PersonFilter>
     {
         private quick_lendingContext db;
 
@@ -56,24 +56,60 @@ namespace DAL.Repositories
             await db.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Person>> GetPaginatedData(BaseFilter filter)
+        public async Task<IEnumerable<Person>> GetPaginatedData(PersonFilter filter)
         {
-            var query = db.People.AsQueryable()
-                .Include(person => person.Statements);
+            IQueryable<Person> query = db.People.AsQueryable()
+                .Include(person => person.Statements)
+                .Where(p => string.IsNullOrEmpty(filter.FirstName) || p.FirstName.Contains(filter.FirstName))
+                .Where(p => string.IsNullOrEmpty(filter.LastName) || p.LastName.Contains(filter.LastName))
+                .Where(p => !filter.AgeMoreThan.HasValue || p.Age >= filter.AgeMoreThan)
+                .Where(p => !filter.AgeLessThan.HasValue || p.Age <= filter.AgeLessThan);
 
-            int totalPersonCount = query.Count();
-            DataProviderHelper<Person> paginatedResult = new DataProviderHelper<Person>();
+            switch (filter.SortingDirection)
+            {
+                case true:
+                    switch (filter.SortingData)
+                    {
+                        case PersonFilter.Sort.firsName:
+                            query = query.OrderBy(p => p.FirstName)
+                                .ThenBy(p => p.LastName);
+                            break;
+                        case PersonFilter.Sort.lastName:
+                            query = query.OrderBy(p => p.LastName).ThenBy(p => p.FirstName);
+                            break;
+                        case PersonFilter.Sort.age:
+                            query = query.OrderBy(p => p.Age);
+                            break;
+                        default:
+                            query = query.OrderBy(p => p.Id);
+                            break;
+                    }
+                    break;
+                case false:
+                    switch (filter.SortingData)
+                    {
+                        case PersonFilter.Sort.firsName:
+                            query = query.OrderByDescending(p => p.FirstName)
+                                .ThenBy(p => p.LastName);
+                            break;
+                        case PersonFilter.Sort.lastName:
+                            query = query.OrderByDescending(p => p.LastName).ThenBy(p => p.FirstName);
+                            break;
+                        case PersonFilter.Sort.age:
+                            query = query.OrderByDescending(p => p.Age);
+                            break;
+                        default:
+                            query = query.OrderByDescending(p => p.Id);
+                            break;
+                    }
+                    break;
+            }
 
+            int totalPersonCount = await query.CountAsync();
+            DataProviderHelper<Person> paginatedResult =
+                new DataProviderHelper<Person>(filter.CurrentPage, filter.ItemsOnPage, totalPersonCount);
 
-            int itemsToSkip = paginatedResult.GetItemsToSkip(totalPersonCount, filter.CurrentPage, filter.ItemsOnPage);
-            int itemsToTake = paginatedResult.GetItemsToTake(totalPersonCount, filter.CurrentPage, filter.ItemsOnPage);
-
-
-            var paginated = new DataProviderHelper<Person>()
-                .GetPaginatedData((await query.ToListAsync())
-                .Skip(itemsToSkip)
-                .Take(itemsToTake).ToList(),
-                filter.CurrentPage, filter.ItemsOnPage, totalPersonCount);
+            var paginated = paginatedResult.GetPaginatedData(await query.ToListAsync());
 
             return paginated.Data;
         }

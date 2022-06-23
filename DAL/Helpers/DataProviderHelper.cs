@@ -6,25 +6,46 @@ namespace DAL.Helpers
 {
     public class DataProviderHelper<T>
     {
-        public PaginatedData<T> GetPaginatedData(List<T> foundData, int currentPage, int itemsOnPage, int totalData)
+        private readonly int currentPage;
+        private readonly int itemsOnPage;
+        private readonly int initialDataCount;
+
+        public DataProviderHelper(int current, int items, int dataCount)
+        {
+            if (current <= 0)
+                currentPage = 1;
+            else
+                currentPage = current;
+            if (items <= 0)
+                itemsOnPage = 10;
+            else if (items > 100)
+                itemsOnPage = 10;
+            else
+                itemsOnPage = items;
+            initialDataCount = dataCount;
+        }
+
+        public PaginatedData<T> GetPaginatedData(List<T> foundData)
         {
             PaginatedData<T> paginatedDataResult = new PaginatedData<T>
             {
                 CurrentPage = currentPage,
                 RecordPerRage = itemsOnPage,
-                TotalRecordsFound = totalData
+                TotalRecordsFound = initialDataCount
             };
 
-            if (foundData != null && foundData.Any() && currentPage > 0 && itemsOnPage > 0)
+            var query = foundData.Skip(GetItemsToSkip()).Take(GetItemsToTake()).ToList();
+
+            if (query.Any() && currentPage > 0 && itemsOnPage > 0)
             {
-                paginatedDataResult.Data = foundData;
-                paginatedDataResult.RecordsReturned = foundData.Count();
+                paginatedDataResult.Data = query;
+                paginatedDataResult.RecordsReturned = query.Count();
             }
 
             return paginatedDataResult;
         }
 
-        public int GetItemsToSkip(int initialDataCount, int currentPage, int itemsOnPage)
+        private int GetItemsToSkip()
         {
             int itemsToSkip = -1;
 
@@ -36,7 +57,7 @@ namespace DAL.Helpers
             return itemsToSkip;
         }
 
-        public int GetItemsToTake(int initialDataCount, int currentPage, int itemsOnPage)
+        private int GetItemsToTake()
         {
             int itemsToTake = -1;
 
