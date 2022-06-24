@@ -7,7 +7,7 @@ namespace BLL.Interfaces
 {
     public interface IPersonService
     {
-        Task<IEnumerable<PersonDTO>> GetAll();
+        //Task<IEnumerable<PersonDTO>> GetAll();
         Task<IEnumerable<PersonDTO>> GetMany(PersonFilter filter);
         Task<PersonDTO> Get(int id);
         Task Create(PersonDTO person);

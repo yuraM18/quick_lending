@@ -20,12 +20,13 @@ namespace API.Controllers
             _personService = personService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<PersonDTO>>> GetAll()
-        {
-            IEnumerable<PersonDTO> people = await _personService.GetAll();
-            return Ok(people);
-        }
+        //[Authorize]
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<PersonDTO>>> GetAll()
+        //{
+        //    IEnumerable<PersonDTO> people = await _personService.GetAll();
+        //    return Ok(people);
+        //}
 
         [HttpGet("{id}")]
         public async Task<ActionResult<PersonDTO>> Get(int id)

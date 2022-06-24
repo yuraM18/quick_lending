@@ -28,16 +28,9 @@ namespace BLL
             services.AddTransient<IEmployeeService, EmployeeService>();
             services.AddTransient<IUserService, UserService>();
 
-            services.AddTransient<IValidator<PersonDTO>, PersonValidator>();
+            services.AddTransient<IValidator<PersonDTO>, PersonDTOValidator>();
+            services.AddTransient<IValidator<StatementTypeDTO>, StatementTypeDTOValidator>();
 
         }
-
-        ////public static class TokenProviderMiddlewareExtensions
-        ////{
-        //public static IApplicationBuilder UseTokenProviderMiddlewaare(this ApplicationBuilder builder)
-        //{
-        //    return builder.UseMiddleware<TokenProviderMiddleware>();
-        //}
-        ////}
     }
 }

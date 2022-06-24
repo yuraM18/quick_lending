@@ -1,5 +1,4 @@
 ﻿using DAL.Interfaces;
-using DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -21,13 +20,17 @@ namespace DAL.Repositories
         public async Task CreateAsync(StatementType item)
         {
             await db.StatementTypes.AddAsync(item);
+            await db.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)
         {
             StatementType type = await db.StatementTypes.FindAsync(id);
             if (type != null)
+            {
                 db.StatementTypes.Remove(type);
+                await db.SaveChangesAsync();
+            }
         }
 
         public IQueryable<StatementType> Find(Expression<Func<StatementType, bool>> predicate)
@@ -37,23 +40,18 @@ namespace DAL.Repositories
 
         public async Task<StatementType> GetAsync(int id)
         {
-            return await db.StatementTypes.FindAsync(id);
+            return await db.StatementTypes.AsNoTracking().FirstOrDefaultAsync(st => st.Id == id);
         }
 
         public async Task<IEnumerable<StatementType>> GetAllAsync()
         {
-            return await db.StatementTypes.ToListAsync();
+            return await db.StatementTypes.AsNoTracking().ToListAsync();
         }
 
         public async Task UpdateAsync(StatementType item)
         {
-            db.Entry(item).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            db.StatementTypes.Update(item);
             await db.SaveChangesAsync();
-        }
-
-        public Task<IEnumerable<StatementType>> GetPaginatedData(BaseFilter filter)
-        {
-            throw new NotImplementedException();
         }
     }
 }

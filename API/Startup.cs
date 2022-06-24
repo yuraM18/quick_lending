@@ -1,4 +1,3 @@
-using API.Middleware;
 using BLL;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -99,7 +98,7 @@ namespace API
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseMiddleware<JwtMiddleware>();
+            //app.UseMiddleware<JwtMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

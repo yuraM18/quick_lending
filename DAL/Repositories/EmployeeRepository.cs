@@ -1,5 +1,4 @@
 ﻿using DAL.Interfaces;
-using DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -42,18 +41,27 @@ namespace DAL.Repositories
 
         public async Task<IEnumerable<Employee>> GetAllAsync()
         {
-            return await db.Employees.ToListAsync();
+            //IQueryable<Person> query = db.People.AsQueryable().Join(db.Employees, c => c.Id, p => p.PeopleId,
+            //    (p, c) => new Person()
+            //    {
+            //        LastName = p.LastName,
+            //        FirstName = p.FirstName,
+            //        Employee = new Employee() { Id = c.Id, PeopleId = p.Id }
+            //    });
+            IQueryable<Employee> query = db.Employees.AsQueryable().Join(db.People, c => c.PeopleId, p => p.Id,
+                (p, c) => new Employee
+                {
+                    Id = p.Id,
+                    PeopleId = p.PeopleId,
+                    People = new Person { FirstName = c.FirstName, LastName = c.LastName }
+                });
+            return await query.ToListAsync();
         }
 
         public async Task UpdateAsync(Employee item)
         {
             db.Entry(item).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
             await db.SaveChangesAsync();
-        }
-
-        public Task<IEnumerable<Employee>> GetPaginatedData(BaseFilter filter)
-        {
-            throw new NotImplementedException();
         }
     }
 }

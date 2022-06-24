@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BLL.DTO;
+using BLL.Helpers;
 using BLL.Interfaces;
 using DAL;
 using DAL.Interfaces;
@@ -22,6 +23,7 @@ namespace BLL.Services
 
         public async Task Create(PersonDTO person)
         {
+            person.Password = new PasswordHasher().HashPassword(person.Password);
             await _unitOfWork.People.CreateAsync(_mapper.Map<PersonDTO, Person>(person));
         }
 
@@ -37,11 +39,11 @@ namespace BLL.Services
             return _mapper.Map<Person, PersonDTO>(person);
         }
 
-        public async Task<IEnumerable<PersonDTO>> GetAll()
-        {
-            var people = await _unitOfWork.People.GetAllAsync();
-            return _mapper.Map<IEnumerable<Person>, IEnumerable<PersonDTO>>(people);
-        }
+        //public async Task<IEnumerable<PersonDTO>> GetAll()
+        //{
+        //    var people = await _unitOfWork.People.GetAllAsync();
+        //    return _mapper.Map<IEnumerable<Person>, IEnumerable<PersonDTO>>(people);
+        //}
 
         public async Task<IEnumerable<PersonDTO>> GetMany(PersonFilter filter)
         {
@@ -51,6 +53,7 @@ namespace BLL.Services
 
         public async Task Update(PersonDTO person)
         {
+            person.Password = new PasswordHasher().HashPassword(person.Password);
             await _unitOfWork.People.UpdateAsync(_mapper.Map<PersonDTO, Person>(person));
         }
     }

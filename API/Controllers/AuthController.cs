@@ -1,5 +1,4 @@
-﻿using API.Middleware;
-using BLL.Interfaces;
+﻿using BLL.Interfaces;
 using BLL.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -38,7 +37,7 @@ namespace API.Controllers
         }
 
         //[Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
-        [JWTAuth_Validation]
+
         [HttpGet(nameof(GetResult))]
         public IActionResult GetResult()
         {
